@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMAST College | Transdisciplinary AMR Research Training</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --soil:     #2c1f0e;
+      --bark:     #4a3520;
+      --moss:     #3d5a3e;
+      --sage:     #7a9e7e;
+      --straw:    #e8d9b0;
+      --cream:    #f5f0e8;
+      --parchment:#ede5d0;
+      --ochre:    #c4862a;
+      --rust:     #a84e1b;
+      --sky:      #4a7fa5;
+      --mist:     #d4e4ee;
+      --ink:      #1a1208;
+      --mid:      #5c4a32;
+
+      --ff-display: 'Playfair Display', Georgia, serif;
+      --ff-body:    'Source Serif 4', Georgia, serif;
+      --ff-mono:    'DM Mono', monospace;
+
+      --radius: 4px;
+      --shadow-card: 0 2px 12px rgba(44,31,14,0.12), 0 1px 3px rgba(44,31,14,0.08);
+      --shadow-deep: 0 8px 32px rgba(44,31,14,0.18);
+    }
+
+    /* ── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--ff-body);
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: var(--moss); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── NOISE TEXTURE OVERLAY ──────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* ── TYPOGRAPHY ─────────────────────────────────────────── */
+    h1, h2, h3, h4 { font-family: var(--ff-display); line-height: 1.2; }
+    h1 { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900; }
+    h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 700; }
+    h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 700; }
+    h4 { font-size: 1rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    p  { font-size: clamp(0.95rem, 1.5vw, 1.05rem); }
+    .label {
+      font-family: var(--ff-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 3rem); }
+    .container--narrow { max-width: 760px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 3rem); }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(245,240,232,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(74,53,32,0.15);
+      padding: 0.85rem 0;
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1100px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 3rem);
+    }
+    .nav-logo {
+      font-family: var(--ff-display);
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: var(--moss);
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--ochre); }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--moss); text-decoration: none; }
+    @media (max-width: 640px) { .nav-links { display: none; } }
+
+    /* ── SEARCH ─────────────────────────────────────────────── */
+    .nav-search { position: relative; }
+    .search-input-wrap {
+      display: flex; align-items: center; gap: 0.4rem;
+      background: rgba(74,53,32,0.08);
+      border: 1px solid rgba(74,53,32,0.15);
+      border-radius: 20px;
+      padding: 0.35rem 0.75rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .search-input-wrap:focus-within {
+      border-color: var(--moss);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(61,90,62,0.12);
+    }
+    .search-input-wrap svg { color: var(--mid); flex-shrink: 0; width: 14px; height: 14px; }
+    #search-input {
+      border: none; background: transparent; outline: none;
+      font-family: var(--ff-mono); font-size: 0.72rem;
+      letter-spacing: 0.06em; color: var(--ink);
+      width: 160px; transition: width 0.3s;
+    }
+    #search-input::placeholder { color: var(--mid); opacity: 0.7; }
+    #search-input:focus { width: 220px; }
+    #search-clear {
+      background: none; border: none; cursor: pointer;
+      color: var(--mid); padding: 0; display: none; line-height: 1;
+    }
+    #search-clear:hover { color: var(--ink); }
+    #search-results {
+      display: none;
+      position: absolute; top: calc(100% + 8px); right: 0;
+      width: 420px; max-height: 480px; overflow-y: auto;
+      background: white;
+      border: 1px solid rgba(74,53,32,0.15);
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(44,31,14,0.18);
+      z-index: 200;
+    }
+    #search-results.visible { display: block; }
+    .search-results-header {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid rgba(74,53,32,0.08);
+      font-family: var(--ff-mono); font-size: 0.65rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid);
+    }
+    .search-result-item {
+      display: block; padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(74,53,32,0.06);
+      cursor: pointer; text-decoration: none;
+      transition: background 0.15s;
+    }
+    .search-result-item:last-child { border-bottom: none; }
+    .search-result-item:hover { background: var(--parchment); text-decoration: none; }
+    .result-section {
+      font-family: var(--ff-mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ochre); margin-bottom: 0.2rem;
+    }
+    .result-title { font-family: var(--ff-body); font-weight: 600; font-size: 0.88rem; color: var(--soil); margin-bottom: 0.2rem; }
+    .result-snippet { font-size: 0.8rem; color: var(--mid); line-height: 1.45; }
+    .result-snippet mark { background: rgba(196,134,42,0.25); color: var(--bark); border-radius: 2px; padding: 0 1px; font-style: normal; }
+    .search-no-results { padding: 1.4rem 1rem; text-align: center; font-size: 0.88rem; color: var(--mid); }
+    @media (max-width: 640px) {
+      #search-results { width: calc(100vw - 2rem); right: -1rem; }
+      #search-input { width: 120px; }
+      #search-input:focus { width: 150px; }
+    }
+
+    /* ── HERO ────────────────────────────────────────────────── */
+    .hero {
+      background: var(--soil);
+      color: var(--cream);
+      padding: clamp(4rem, 8vw, 7rem) 0 clamp(3rem, 6vw, 5rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(61,90,62,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 80% at 10% 80%, rgba(196,134,42,0.2) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative;
+      max-width: 1100px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 3rem);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (max-width: 720px) { .hero-inner { grid-template-columns: 1fr; } }
+    .hero-eyebrow {
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 2rem; height: 1px;
+      background: var(--sage);
+    }
+    .hero h1 {
+      color: var(--straw);
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--ochre);
+    }
+    .hero-sub {
+      color: rgba(232,217,176,0.75);
+      font-size: 1.1rem;
+      line-height: 1.65;
+      margin-bottom: 2rem;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--ochre);
+      color: var(--soil);
+      font-family: var(--ff-mono);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.85rem 1.6rem;
+      border-radius: var(--radius);
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+    .hero-cta:hover { background: #d4952e; transform: translateY(-1px); text-decoration: none; }
+    .hero-cta svg { width: 14px; height: 14px; }
+    .hero-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .hero-stat {
+      background: rgba(255,255,255,0.04);
+      padding: 1.4rem 1.2rem;
+      text-align: center;
+    }
+    .hero-stat-num {
+      font-family: var(--ff-display);
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--ochre);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .hero-stat-label {
+      font-family: var(--ff-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(232,217,176,0.6);
+      line-height: 1.3;
+    }
+
+    /* ── SECTION BASE ───────────────────────────────────────── */
+    section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
+    .section-label {
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ochre);
+      margin-bottom: 0.6rem;
+    }
+    .section-title { margin-bottom: 0.6rem; color: var(--soil); }
+    .section-intro { color: var(--mid); font-size: 1.05rem; max-width: 620px; margin-bottom: 2.5rem; }
+
+    /* ── WHAT IS AMAST ──────────────────────────────────────── */
+    .intro-section { background: var(--parchment); }
+    .intro-grid {
+      display: grid; grid-template-columns: 1.2fr 1fr; gap: 3.5rem; align-items: start;
+    }
+    @media (max-width: 720px) { .intro-grid { grid-template-columns: 1fr; } }
+    .intro-pull {
+      font-family: var(--ff-display);
+      font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+      font-style: italic;
+      color: var(--moss);
+      border-left: 3px solid var(--ochre);
+      padding-left: 1.2rem;
+      margin: 1.8rem 0;
+      line-height: 1.5;
+    }
+    .principle-list { display: flex; flex-direction: column; gap: 1rem; }
+    .principle {
+      display: flex; gap: 0.9rem; align-items: flex-start;
+      padding: 1rem 1.1rem;
+      background: var(--cream);
+      border-radius: var(--radius);
+      border: 1px solid rgba(74,53,32,0.1);
+    }
+    .principle-icon {
+      font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .principle h4 { font-size: 0.8rem; color: var(--moss); margin-bottom: 0.2rem; }
+    .principle p { font-size: 0.88rem; color: var(--mid); line-height: 1.5; }
+
+    /* ── THREE-DAY JOURNEY ──────────────────────────────────── */
+    .journey-section { background: var(--cream); }
+    .day-tabs {
+      display: flex; gap: 0; margin-bottom: 2.5rem;
+      border-bottom: 2px solid rgba(74,53,32,0.12);
+    }
+    .day-tab {
+      padding: 0.75rem 1.8rem;
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+      cursor: pointer;
+      border: none; background: transparent;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .day-tab:hover { color: var(--moss); }
+    .day-tab.active { color: var(--moss); border-bottom-color: var(--moss); font-weight: 500; }
+    @media (max-width: 500px) {
+      .day-tabs { flex-wrap: wrap; }
+      .day-tab { padding: 0.6rem 1.2rem; }
+    }
+
+    .day-panel { display: none; }
+    .day-panel.active { display: block; }
+
+    .day-header {
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      margin-bottom: 2rem; padding: 1.6rem;
+      border-radius: var(--radius);
+      background: var(--parchment);
+      border-left: 4px solid var(--moss);
+    }
+    .day-num {
+      font-family: var(--ff-display);
+      font-size: 3rem; font-weight: 900;
+      color: var(--moss); opacity: 0.25;
+      line-height: 1; flex-shrink: 0;
+    }
+    .day-header-text h3 { color: var(--soil); margin-bottom: 0.3rem; }
+    .day-header-text .day-theme {
+      font-family: var(--ff-mono); font-size: 0.7rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ochre); margin-bottom: 0.5rem;
+    }
+    .day-header-text p { color: var(--mid); font-size: 0.95rem; }
+
+    .activities { display: flex; flex-direction: column; gap: 0.5rem; }
+    .activity {
+      border: 1px solid rgba(74,53,32,0.12);
+      border-radius: var(--radius);
+      background: var(--cream);
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .activity:hover { box-shadow: var(--shadow-card); }
+    .activity-header {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.2rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .activity-num {
+      font-family: var(--ff-mono); font-size: 0.65rem;
+      color: var(--ochre); flex-shrink: 0;
+      width: 2rem; font-weight: 500;
+    }
+    .activity-title {
+      flex: 1; font-family: var(--ff-body);
+      font-weight: 600; font-size: 0.95rem; color: var(--soil);
+    }
+    .activity-tag {
+      font-family: var(--ff-mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.2rem 0.5rem; border-radius: 2px;
+      background: var(--mist); color: var(--sky);
+      flex-shrink: 0;
+    }
+    .activity-tag.tag-par   { background: #e8f0e9; color: var(--moss); }
+    .activity-tag.tag-td    { background: #fef3e2; color: var(--ochre); }
+    .activity-tag.tag-field { background: #f3e8e0; color: var(--rust); }
+    .activity-tag.tag-key   { background: #e8e4f0; color: #5a4a8a; }
+    .activity-chevron {
+      width: 16px; height: 16px; flex-shrink: 0;
+      color: var(--mid); transition: transform 0.25s;
+    }
+    .activity.open .activity-chevron { transform: rotate(180deg); }
+    .activity-body {
+      display: none;
+      padding: 0 1.2rem 1.2rem 3.7rem;
+      border-top: 1px solid rgba(74,53,32,0.08);
+    }
+    .activity.open .activity-body { display: block; }
+    .activity-body p { font-size: 0.93rem; color: var(--mid); margin-bottom: 0.6rem; }
+    .activity-body .key-skill {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--straw); color: var(--bark);
+      font-family: var(--ff-mono); font-size: 0.68rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.3rem 0.7rem; border-radius: 2px;
+      margin-top: 0.5rem;
+    }
+    .day-outcome {
+      margin-top: 1.8rem; padding: 1.2rem 1.4rem;
+      background: var(--moss); color: var(--cream);
+      border-radius: var(--radius);
+      display: flex; gap: 0.8rem; align-items: flex-start;
+    }
+    .day-outcome svg { flex-shrink: 0; margin-top: 0.15rem; }
+    .day-outcome p { font-size: 0.92rem; line-height: 1.6; }
+    .day-outcome strong { font-weight: 600; display: block; margin-bottom: 0.2rem; font-family: var(--ff-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* ── CORE METHODS ───────────────────────────────────────── */
+    .methods-section { background: var(--soil); color: var(--straw); }
+    .methods-section .section-label { color: var(--sage); }
+    .methods-section .section-title { color: var(--straw); }
+    .methods-section .section-intro { color: rgba(232,217,176,0.7); }
+    .methods-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .method-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .method-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+    .method-card-header {
+      padding: 1.6rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .method-icon {
+      width: 40px; height: 40px; margin-bottom: 1rem;
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    .method-card h3 { color: var(--straw); margin-bottom: 0.4rem; font-size: 1.15rem; }
+    .method-card .method-day { font-family: var(--ff-mono); font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage); }
+    .method-card-body { padding: 1.4rem 1.6rem; }
+    .method-card p { font-size: 0.92rem; color: rgba(232,217,176,0.72); margin-bottom: 1rem; }
+    .method-steps { display: flex; flex-direction: column; gap: 0.5rem; }
+    .method-step {
+      display: flex; gap: 0.7rem; align-items: flex-start;
+      font-size: 0.88rem; color: rgba(232,217,176,0.8);
+    }
+    .method-step-num {
+      font-family: var(--ff-mono); font-size: 0.65rem;
+      color: var(--ochre); flex-shrink: 0;
+      width: 1.2rem; margin-top: 0.15rem;
+    }
+
+    /* ── FRAMEWORK EXPLORER ─────────────────────────────────── */
+    .framework-section { background: var(--parchment); }
+    .framework-tabs {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem;
+    }
+    .ftab {
+      font-family: var(--ff-mono); font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.5rem 1rem; border-radius: var(--radius);
+      border: 1px solid rgba(74,53,32,0.2);
+      color: var(--mid); background: var(--cream);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .ftab:hover { border-color: var(--moss); color: var(--moss); }
+    .ftab.active { background: var(--moss); color: var(--cream); border-color: var(--moss); }
+    .fpanel { display: none; }
+    .fpanel.active { display: block; }
+    .framework-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    @media (max-width: 640px) { .framework-grid { grid-template-columns: 1fr; } }
+    .fcard {
+      background: var(--cream);
+      border: 1px solid rgba(74,53,32,0.1);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+    }
+    .fcard-q {
+      font-family: var(--ff-display);
+      font-size: 1rem; font-weight: 700;
+      color: var(--soil); margin-bottom: 0.5rem;
+    }
+    .fcard-hint { font-size: 0.88rem; color: var(--mid); line-height: 1.55; }
+    .fcard-prompt {
+      margin-top: 0.8rem;
+      padding: 0.7rem 0.9rem;
+      background: var(--parchment);
+      border-radius: 2px;
+      font-size: 0.82rem;
+      color: var(--bark);
+      font-style: italic;
+      border-left: 2px solid var(--ochre);
+    }
+    .framework-reflection {
+      margin-top: 1.5rem;
+      padding: 1.4rem;
+      background: var(--straw);
+      border-radius: var(--radius);
+      border: 1px solid rgba(196,134,42,0.25);
+    }
+    .framework-reflection h4 { color: var(--bark); margin-bottom: 0.8rem; }
+    .framework-reflection p { font-size: 0.92rem; color: var(--mid); margin-bottom: 0.5rem; }
+
+    /* ── TD DESIGN ──────────────────────────────────────────── */
+    .td-intro { margin-bottom: 1.5rem; }
+    .td-contrast {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: rgba(74,53,32,0.12);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .td-col { padding: 1.4rem; }
+    .td-col.uni { background: #f0ece4; }
+    .td-col.trans { background: #e8f0e9; }
+    .td-col h4 { margin-bottom: 0.8rem; font-size: 0.75rem; }
+    .td-col.uni h4 { color: var(--mid); }
+    .td-col.trans h4 { color: var(--moss); }
+    .td-example {
+      font-size: 0.88rem; color: var(--mid);
+      line-height: 1.55; padding: 0.6rem 0.8rem;
+      background: rgba(255,255,255,0.5); border-radius: 2px;
+      margin-bottom: 0.5rem;
+    }
+    .td-example.good { border-left: 2px solid var(--moss); color: var(--bark); }
+    .td-example.neutral { border-left: 2px solid rgba(74,53,32,0.2); }
+    .td-builder {
+      background: var(--cream);
+      border: 1px solid rgba(74,53,32,0.12);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+    }
+    .td-builder h3 { color: var(--soil); margin-bottom: 0.4rem; font-size: 1rem; }
+    .td-builder p { font-size: 0.88rem; color: var(--mid); margin-bottom: 1.2rem; }
+    .td-formula {
+      display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;
+      font-family: var(--ff-mono); font-size: 0.78rem;
+    }
+    .td-part {
+      padding: 0.4rem 0.7rem; border-radius: 3px;
+      color: white;
+    }
+    .td-part.bio { background: var(--moss); }
+    .td-part.eco { background: var(--sky); }
+    .td-part.soc { background: var(--ochre); }
+    .td-part.pol { background: var(--rust); }
+    .td-part.plus { background: none; color: var(--mid); font-size: 1rem; }
+    .td-part.arrow { background: none; color: var(--soil); font-size: 1rem; }
+
+    /* ── REAL PROPOSALS ─────────────────────────────────────── */
+    .proposals-section { background: var(--cream); }
+    .proposals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 720px) { .proposals-grid { grid-template-columns: 1fr; } }
+    .proposal-card {
+      background: var(--parchment);
+      border: 1px solid rgba(74,53,32,0.12);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .proposal-card:hover { box-shadow: var(--shadow-deep); }
+    .proposal-card-top {
+      padding: 1.4rem;
+      background: var(--bark);
+      color: var(--straw);
+    }
+    .proposal-card-top .label { color: var(--sage); margin-bottom: 0.5rem; }
+    .proposal-card-top h3 { font-size: 1.05rem; line-height: 1.35; }
+    .proposal-card-body { padding: 1.4rem; }
+    .proposal-detail { margin-bottom: 1rem; }
+    .proposal-detail h4 { font-size: 0.72rem; color: var(--ochre); margin-bottom: 0.3rem; }
+    .proposal-detail p { font-size: 0.88rem; color: var(--mid); line-height: 1.55; }
+    .proposal-disciplines {
+      display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 1rem;
+    }
+    .disc-tag {
+      font-family: var(--ff-mono); font-size: 0.62rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.2rem 0.55rem; border-radius: 2px;
+    }
+
+    /* ── PRINCIPLES ─────────────────────────────────────────── */
+    .principles-section { background: var(--parchment); }
+    .principles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+    .p-card {
+      padding: 1.4rem;
+      background: var(--cream);
+      border-radius: var(--radius);
+      border: 1px solid rgba(74,53,32,0.1);
+    }
+    .p-num {
+      font-family: var(--ff-display);
+      font-size: 2rem; font-weight: 900;
+      color: var(--straw);
+      line-height: 1; margin-bottom: 0.6rem;
+    }
+    .p-card h3 { font-size: 0.95rem; color: var(--soil); margin-bottom: 0.4rem; }
+    .p-card p  { font-size: 0.85rem; color: var(--mid); line-height: 1.55; }
+
+    /* ── GET INVOLVED ───────────────────────────────────────── */
+    .involved-section {
+      background: var(--moss);
+      color: var(--cream);
+      text-align: center;
+      padding: clamp(3rem, 6vw, 5rem) 0;
+    }
+    .involved-section .section-label { color: var(--sage); }
+    .involved-section .section-title { color: var(--straw); margin-bottom: 0.8rem; }
+    .involved-section p { color: rgba(245,240,232,0.75); max-width: 540px; margin: 0 auto 2.5rem; }
+    .network-cards {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .net-card {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.6rem;
+      text-align: left; min-width: 220px;
+    }
+    .net-card h4 { color: var(--straw); font-size: 0.85rem; margin-bottom: 0.3rem; }
+    .net-card p { font-size: 0.82rem; color: rgba(245,240,232,0.65); }
+    .cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--ff-mono); font-size: 0.72rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.85rem 1.6rem; border-radius: var(--radius);
+      transition: all 0.2s; text-decoration: none;
+    }
+    .btn-primary { background: var(--ochre); color: var(--soil); }
+    .btn-primary:hover { background: #d4952e; text-decoration: none; }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: var(--straw); border: 1px solid rgba(255,255,255,0.2); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.18); text-decoration: none; }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--soil); color: rgba(232,217,176,0.5);
+      padding: 2rem 0;
+      font-family: var(--ff-mono); font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+    footer a { color: var(--sage); }
+
+    /* ── ANIMATIONS ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.55s ease both; }
+    .fade-up-1 { animation-delay: 0.1s; }
+    .fade-up-2 { animation-delay: 0.22s; }
+    .fade-up-3 { animation-delay: 0.34s; }
+    .fade-up-4 { animation-delay: 0.46s; }
+
+    /* ── UTILITIES ──────────────────────────────────────────── */
+    .mt-sm { margin-top: 0.6rem; }
+    .mt-md { margin-top: 1.2rem; }
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(74,53,32,0.2), transparent);
+      margin: 2rem 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">AMAST <span>College</span></div>
+    <div class="nav-links">
+      <a href="#journey">The Journey</a>
+      <a href="#methods">Methods</a>
+      <a href="#frameworks">Frameworks</a>
+      <a href="#involved">Get Involved</a>
+    </div>
+    <div class="nav-search">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6.5" cy="6.5" r="4"/><path d="M11 11l2.5 2.5"/></svg>
+        <input id="search-input" type="search" placeholder="Search content…" autocomplete="off" aria-label="Search site content" />
+        <button id="search-clear" aria-label="Clear search">✕</button>
+      </div>
+      <div id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────── -->
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow fade-up">AMAST · Early Career College · March 2026</div>
+      <h1 class="fade-up fade-up-1">Research <em>across</em> the boundaries that matter</h1>
+      <p class="hero-sub fade-up fade-up-2">
+        A three-day intensive training in transdisciplinary and participatory methods for tackling antimicrobial resistance in agrifood systems. Built for early career professionals and researchers.
+      </p>
+      <a href="#journey" class="hero-cta fade-up fade-up-3">
+        Explore the programme
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8l5 5 5-5"/></svg>
+      </a>
+    </div>
+    <div class="hero-stats fade-up fade-up-4">
+      <div class="hero-stat">
+        <div class="hero-stat-num">3</div>
+        <div class="hero-stat-label">Intensive Days</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">15</div>
+        <div class="hero-stat-label">Structured Activities</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">2</div>
+        <div class="hero-stat-label">Core Frameworks</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">∞</div>
+        <div class="hero-stat-label">Disciplines Welcome</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── WHAT IS THIS ──────────────────────────────────────────── -->
+<section class="intro-section" id="about">
+  <div class="container">
+    <div class="intro-grid">
+      <div>
+        <div class="section-label">What is the AMAST College?</div>
+        <h2 class="section-title">AMR cannot be solved from one discipline alone</h2>
+        <p>The AMAST (AntiMicrobial resistance in Agrifood Systems Transdisciplinary) Network College brings together early career professionals and researchers from veterinary science, environmental science, social science, microbiology, policy, and beyond — to learn how to work across disciplinary boundaries on one of the defining challenges in global health.</p>
+        <blockquote class="intro-pull">"Less than 30% of UK antibiotics treat farm animals — yet the problem of resistance is shaped by biology, economics, behaviour, culture, and environment all at once."</blockquote>
+        <p>This resource captures the training methods, frameworks, and real proposal concepts from the inaugural college. Whether you attended or not, you can use it to understand and apply these approaches in your own research.</p>
+      </div>
+      <div class="principle-list">
+        <div class="principle">
+          <div class="principle-icon">🌐</div>
+          <div>
+            <h4>Transdisciplinary</h4>
+            <p>Going beyond putting disciplines side by side — genuinely integrating scientific, practitioner, and community knowledge to co-produce solutions.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <div class="principle-icon">🤝</div>
+          <div>
+            <h4>Participatory</h4>
+            <p>Designing research <em>with</em> farmers and stakeholders, not <em>on</em> them. Shared power over questions, methods, and outputs.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <div class="principle-icon">🔄</div>
+          <div>
+            <h4>Systems Thinking</h4>
+            <p>Seeing AMR as an interconnected problem shaped by feedback loops, trade-offs, and dynamics that no single intervention can fix alone.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <div class="principle-icon">🌱</div>
+          <div>
+            <h4>Early Career Focused</h4>
+            <p>Built specifically to develop the generation of professionals and researchers who will carry AMR research and science forward — with mentorship, funding, and network connections.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── THREE-DAY JOURNEY ─────────────────────────────────────── -->
+<section class="journey-section" id="journey">
+  <div class="container">
+    <div class="section-label">The Programme</div>
+    <h2 class="section-title">Three days, building layer by layer</h2>
+    <p class="section-intro">Each activity prepares participants for the next. The learning architecture moves from individual perspective → shared understanding → collaborative creation.</p>
+
+    <div class="day-tabs">
+      <button class="day-tab active" onclick="showDay(1, this)">Day 1 — Foundations</button>
+      <button class="day-tab" onclick="showDay(2, this)">Day 2 — Methods</button>
+      <button class="day-tab" onclick="showDay(3, this)">Day 3 — Application</button>
+    </div>
+
+    <!-- DAY 1 -->
+    <div class="day-panel active" id="day-1">
+      <div class="day-header">
+        <div class="day-num">1</div>
+        <div class="day-header-text">
+          <div class="day-theme">Building Foundations &amp; Shared Language</div>
+          <h3>Tuesday, 3 March 2026</h3>
+          <p>Participants arrive as individuals from different disciplines. By the end of Day 1 they share a common language for AMR as a complex systems problem and have identified potential collaborators.</p>
+        </div>
+      </div>
+      <div class="activities">
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">01</span>
+            <span class="activity-title">Keynote: Systems Thinking in Agrifood AMR Research</span>
+            <span class="activity-tag tag-key">Keynote</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Speaker: Emeritus Prof. Steve Rushton</strong> — 14:15–15:00</p>
+            <p>Using Campylobacter as a 30-year case study, this keynote demonstrated what systems modelling in Quantitative Microbial Risk Assessment actually looks like in practice. Key insight: AMR modelling requires integrating processes across biological, spatial, and temporal scales — from individual bacteria to national populations — and no single discipline can do this alone.</p>
+            <p>Participants left understanding why AMR in agrifood systems is a "super wicked problem": the biology, the food chain, human behaviour, the environment, and economics are all entangled in feedback loops that resist simple solutions.</p>
+            <span class="key-skill">🔑 Builds: Conceptual foundation for systems thinking</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">02</span>
+            <span class="activity-title">Collaboration Superpower — Rounds 1–3</span>
+            <span class="activity-tag tag-td">Networking</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Facilitator: Mahmoud Eltholth</strong> — 15:00–15:45</p>
+            <p>Groups of 6–7 rotate through three 15-minute rounds, each person sharing their role for 1 minute then working through a structured question together. The activity repeats on Day 2 with harder questions, ensuring every participant meets every other participant across the two days.</p>
+            <p><em>Round 1:</em> "What question are you hoping to explore this week?"<br>
+               <em>Round 2:</em> "Share a recent 'aha moment' from your research or practice"<br>
+               <em>Round 3:</em> "What method from your field could help solve AMR?"</p>
+            <p>Participants note who they want to work with and why — used on Day 2 and 3 to form proposal groups.</p>
+            <span class="key-skill">🔑 Builds: Cross-disciplinary awareness; potential collaborator identification</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">03</span>
+            <span class="activity-title">Mini-Talk: Doing Transdisciplinary Research</span>
+            <span class="activity-tag tag-td">Concept</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Speaker: Marie McIntyre</strong> — 16:15–16:30</p>
+            <p>A compact but important conceptual framing: what is the difference between multi-, inter-, and transdisciplinary research? The transdisciplinary approach is not just about putting disciplines side by side — it requires genuine integration of scientific, practitioner, and community knowledge to co-produce solutions that work within society. It is cyclical, not linear, and always involves iterative stakeholder engagement.</p>
+            <p>Key distinction: the "trans" part means going beyond academic institutions into communities and the broader environment, and co-designing rather than consulting after the fact.</p>
+            <span class="key-skill">🔑 Builds: Shared conceptual vocabulary for the rest of the College</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">04</span>
+            <span class="activity-title">Systems Mapping Workshop</span>
+            <span class="activity-tag tag-td">Workshop</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Facilitator: Lisa Morgans</strong> — 16:30–17:45</p>
+            <p><em>Small group mapping (16:30–17:10):</em> Groups of 6–8 receive large poster paper and coloured markers. Task: map all the factors influencing antimicrobial use in their sector — stakeholders, economic pressures, regulations, knowledge gaps, social norms, environmental conditions. Draw connections. Ask: where would interventions work, and where would they fail?</p>
+            <p><em>Gallery walk (17:10–17:30):</em> Groups post maps on walls. Participants add post-its connecting patterns across maps ("this affects that!"). Identify common patterns and surprising gaps.</p>
+            <p><em>Synthesis (17:30–17:45):</em> Facilitators highlight key systems thinking insights. These maps become reference material for Day 2 and Day 3 proposal development.</p>
+            <span class="key-skill">🔑 Builds: Visual practice in systems thinking; shared reference artefacts</span>
+          </div>
+        </div>
+      </div>
+      <div class="day-outcome">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 3L6 10 3 7"/></svg>
+        <p><strong>By end of Day 1 participants:</strong> Understand AMR as complex and systemic; recognise each discipline is one piece; have started identifying potential collaborators; hold a shared vocabulary for the work ahead.</p>
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-panel" id="day-2">
+      <div class="day-header">
+        <div class="day-num">2</div>
+        <div class="day-header-text">
+          <div class="day-theme">Deep Dive into Methods &amp; Collaboration</div>
+          <h3>Wednesday, 4 March 2026</h3>
+          <p>Day 2 shifts from understanding to doing. Participants learn how to actually work across boundaries — with stakeholders (Participatory Action Research) and across disciplines (Transdisciplinary Research Design) — through real cases, a farm visit, and hands-on workshops.</p>
+        </div>
+      </div>
+      <div class="activities">
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">05</span>
+            <span class="activity-title">AMAST Showcase: Outputs from Participatory Workshops</span>
+            <span class="activity-tag tag-par">PAR</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Matt Gilmour (Quadrant)</strong> — 09:30–10:00</p>
+            <p>Concrete examples of what participatory AMR research looks like in practice: the pig industry's 60% AMU reduction journey, engagement with game bird farmers, work with a major UK ready-to-eat food business. Key lesson: these projects work because they start with the question "what problem do you want to solve?" rather than leading with the science. The AMAST network acts as an honest broker between farmers/vets and regulators/innovators who don't naturally connect.</p>
+            <span class="key-skill">🔑 Builds: Inspiration and reality-check for own proposals</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">06</span>
+            <span class="activity-title">Collaboration Superpower — Rounds 4–6</span>
+            <span class="activity-tag tag-td">Networking</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Facilitator: Mahmoud Eltholth</strong> — 10:00–10:45</p>
+            <p>The second tranche of Collaboration Superpower rounds, with harder, more revealing questions designed to surface complementary expertise and genuine tensions:</p>
+            <p><em>Round 4:</em> "What's one thing about AMR in your discipline that surprises people?"<br>
+               <em>Round 5:</em> "What assumption in your field needs challenging?"<br>
+               <em>Round 6:</em> "What's a challenge in your work that another discipline might solve?"</p>
+            <span class="key-skill">🔑 Builds: Deeper connections; identification of who to form proposals with</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">07</span>
+            <span class="activity-title">Keynote: Researching With Farmers</span>
+            <span class="activity-tag tag-par">PAR</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Speaker: Lisa Morgans (RAU)</strong> — 11:00–11:45</p>
+            <p>A candid, case-study-driven talk on what participatory research with farmers actually looks like — the wins, the failures, and the hard-won lessons. Drawing on a decade of work across dairy, sheep, game bird, and international farming systems.</p>
+            <p>Core lessons: listen before you speak; find common ground on the farmer's terms; use benchmarking data in the language that resonates (often money); peer-to-peer learning between farmers outperforms researcher-to-farmer knowledge transfer; and managing gatekeepers is as important as managing the research itself.</p>
+            <span class="key-skill">🔑 Builds: Practical skills for stakeholder engagement; grounds proposals in reality</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">08</span>
+            <span class="activity-title">Field Visit: Cockle Park Farm</span>
+            <span class="activity-tag tag-field">Field</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Fritha Langford, Dave George &amp; James Standen (Newcastle University)</strong> — 11:45–14:30</p>
+            <p>A hands-on visit to the university's Cockle Park Farm — livestock AMR tour with young beef cattle, followed by a Q&amp;A with the farm manager on the realities of working with researchers: the tension between research timelines and farming timelines, what a research farm can and cannot do, and what farmers and practitioners actually want from AMR research partnerships.</p>
+            <p>This is the Kolb Cycle in action: concrete experience that grounds all the theoretical frameworks in physical reality. Participants who visited often described this as one of the most perspective-shifting parts of the programme.</p>
+            <span class="key-skill">🔑 Builds: Direct real-world exposure; farmer/practitioner perspective</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">09</span>
+            <span class="activity-title">Participatory Research Workshop</span>
+            <span class="activity-tag tag-par">PAR</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Facilitator: Lisa Morgans</strong> — 14:30–15:45 <span style="color:var(--rust)">· KEY SKILL: Working WITH stakeholders</span></p>
+            <p>Groups receive a realistic AMR scenario and a structured PAR Framework Template. The central question: how would you do this <em>with</em> stakeholders, not <em>on</em> them? Groups work through four dimensions: <strong>Who</strong> (partners vs stakeholders, and why those and not others?), <strong>What</strong> (co-developing questions, methods, and non-academic outputs), <strong>How</strong> (trust, power-sharing, recognising contributions, accessibility), and <strong>Challenges</strong> (practical barriers, tensions, mitigation strategies).</p>
+            <p>The PAR Framework Template from this session is available in the Frameworks section below.</p>
+            <span class="key-skill">🔑 KEY SKILL: Authentic collaboration design</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">10</span>
+            <span class="activity-title">Transdisciplinary Research Questions Workshop</span>
+            <span class="activity-tag tag-td">Workshop</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Facilitator: Matt Gilmour + All</strong> — 16:45–17:45 <span style="color:var(--rust)">· KEY SKILL: Working ACROSS disciplines</span></p>
+            <p>Small group exercises identifying AMR challenges across sectors (pig, ruminant, poultry, aquaculture, crops, game birds, cross-sector) and formulating research questions that genuinely require multiple disciplines to answer. Groups then begin forming for collaborative proposal development: identifying a specific problem from each disciplinary perspective, finding commonality and divergence, and using systems thinking to place themselves on the problem map.</p>
+            <span class="key-skill">🔑 KEY SKILL: Discipline-to-discipline integration</span>
+          </div>
+        </div>
+      </div>
+      <div class="day-outcome">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 3L6 10 3 7"/></svg>
+        <p><strong>By end of Day 2 participants have:</strong> Methods for both PAR and transdisciplinary research design; draft research questions; identified collaborators; direct experience of the farm context their research will ultimately serve.</p>
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-panel" id="day-3">
+      <div class="day-header">
+        <div class="day-num">3</div>
+        <div class="day-header-text">
+          <div class="day-theme">Skills for Action &amp; Sustained Collaboration</div>
+          <h3>Thursday, 5 March 2026</h3>
+          <p>Day 3 is about synthesis and tangible outputs. Groups present proposals, learn futures thinking and communication strategies, and leave with concrete next steps, new collaborators, and connections to funding and mentorship networks.</p>
+        </div>
+      </div>
+      <div class="activities">
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">11</span>
+            <span class="activity-title">Collaborative Proposal Development Workshop</span>
+            <span class="activity-tag tag-td">Workshop</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Matt Gilmour + All Facilitators</strong> — 09:30–10:30</p>
+            <p>Final working session to develop group proposals using a business canvas-inspired planning tool: What is the real system pain? What is the scientific differentiator? Who will actually adopt the output — and how do you know? What are the barriers? What does return on investment look like? Facilitators circulate providing feedback. Groups can use their Day 1 systems maps and Day 2 PAR/TD frameworks as inputs. The actual AMAST application form is provided for groups to draft against.</p>
+            <span class="key-skill">🔑 Builds: Integrates ALL prior learning into a tangible output</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">12</span>
+            <span class="activity-title">Group Presentations</span>
+            <span class="activity-tag tag-td">Presentations</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Chair: Marie McIntyre</strong> — 10:30–12:00</p>
+            <p>Each group presents their transdisciplinary research proposal (15 minutes each) followed by peer feedback and constructive discussion. Proposals can take any format — PowerPoint, a conversation, a poem, a performed scenario — but must also be captured in written form.</p>
+            <span class="key-skill">🔑 Builds: Communication skills; peer learning; constructive feedback practice</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">13</span>
+            <span class="activity-title">Futures Thinking</span>
+            <span class="activity-tag tag-key">Keynote</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Janice Spencer (Glasgow Caledonian University / FAN)</strong> — 12:00–12:30</p>
+            <p>An introduction to the Futures AMR Network (FAN), AMAST's sister network, combined with futures thinking: how to anticipate system changes and prepare research approaches for an uncertain landscape. Includes an interactive live poll on ECR needs, barriers, and what would most accelerate AMR research — results fed directly into FAN's AMR Blueprint work on supporting early career researcher career development.</p>
+            <span class="key-skill">🔑 Builds: Long-term thinking; network connections; policy voice</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">14</span>
+            <span class="activity-title">Transdisciplinary Communication</span>
+            <span class="activity-tag tag-key">Workshop</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Seema Biswas</strong> — 13:30–14:00</p>
+            <p>Drawing on experience as a surgeon, journal editor, and Red Cross field communicator, this session covered how to communicate research across the four audiences that matter most: the press and media, funders, academic journals, and the general public. Core message: changing someone's perspective is the hardest and most important task. Each audience requires a different entry point — and the goal is always to get people inside your tent before trying to persuade them.</p>
+            <p>Groups worked in tables to develop communication strategies for each audience, then shared across the room.</p>
+            <span class="key-skill">🔑 Builds: Communication skills for diverse audiences</span>
+          </div>
+        </div>
+        <div class="activity">
+          <div class="activity-header" onclick="toggleActivity(this)">
+            <span class="activity-num">15</span>
+            <span class="activity-title">Pearls, Puzzles, Proposals — Reflection &amp; Next Steps</span>
+            <span class="activity-tag tag-par">Reflection</span>
+            <svg class="activity-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </div>
+          <div class="activity-body">
+            <p><strong>Facilitator: Lisa Morgans</strong> — 14:00–14:45</p>
+            <p>Structured reflective practice to consolidate learning and commit to next steps. Three questions:</p>
+            <p>💎 <strong>Pearls</strong> — What wisdom have you gained that you'll carry forward?<br>
+               🧩 <strong>Puzzles</strong> — What questions are you still holding? What remains unresolved?<br>
+               🚀 <strong>Proposals</strong> — What would you do differently? What could be developed further?</p>
+            <p>Can be verbal or physical (posters around the room). Followed by closing remarks, feedback collection, and departure arrangements.</p>
+            <span class="key-skill">🔑 Builds: Reflective practice; metacognition; sustained engagement</span>
+          </div>
+        </div>
+      </div>
+      <div class="day-outcome">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 3L6 10 3 7"/></svg>
+        <p><strong>Participants leave with:</strong> A draft research proposal concept; new cross-disciplinary collaborators; practical skills in PAR and transdisciplinary research design; connections with AMAST and FAN networks and access to flexible funding.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CORE METHODS ───────────────────────────────────────────── -->
+<section class="methods-section" id="methods">
+  <div class="container">
+    <div class="section-label">Core Methods</div>
+    <h2 class="section-title">Two frameworks at the heart of the College</h2>
+    <p class="section-intro">The College teaches two complementary approaches — one for working with people outside academia, one for integrating knowledge across disciplines.</p>
+    <div class="methods-grid">
+      <div class="method-card">
+        <div class="method-card-header">
+          <div class="method-icon">🤝</div>
+          <div class="method-day">Day 2 — Key Skill</div>
+          <h3>Participatory Action Research</h3>
+        </div>
+        <div class="method-card-body">
+          <p>PAR means designing research <em>with</em> farmers and stakeholders, not <em>on</em> them. It is action-orientated: there is an implied intent to change practices, not just understand them. The researcher is embedded in the system they are trying to change.</p>
+          <div class="method-steps">
+            <div class="method-step"><span class="method-step-num">1.</span><span>Identify who the real partners are — not just who is convenient to reach</span></div>
+            <div class="method-step"><span class="method-step-num">2.</span><span>Co-develop the questions that matter to both researchers and communities</span></div>
+            <div class="method-step"><span class="method-step-num">3.</span><span>Share power over methods, data interpretation, and outputs</span></div>
+            <div class="method-step"><span class="method-step-num">4.</span><span>Acknowledge and compensate contributions of time and expertise</span></div>
+            <div class="method-step"><span class="method-step-num">5.</span><span>Anticipate tensions; reflect on them; respond iteratively</span></div>
+            <div class="method-step"><span class="method-step-num">6.</span><span>Follow up — keep relationships alive after the project ends</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-card-header">
+          <div class="method-icon">🔬</div>
+          <div class="method-day">Day 2 — Key Skill</div>
+          <h3>Transdisciplinary Research Design</h3>
+        </div>
+        <div class="method-card-body">
+          <p>A transdisciplinary question cannot be answered from one discipline alone. It requires genuine integration — not disciplines placed side by side, but knowledge systems genuinely combined to produce something none could reach alone.</p>
+          <div class="method-steps">
+            <div class="method-step"><span class="method-step-num">1.</span><span>Build an integrated problem statement drawing on all disciplinary perspectives</span></div>
+            <div class="method-step"><span class="method-step-num">2.</span><span>Draft a question that requires ≥3 disciplines to answer</span></div>
+            <div class="method-step"><span class="method-step-num">3.</span><span>Map what each discipline would measure, observe, or analyse</span></div>
+            <div class="method-step"><span class="method-step-num">4.</span><span>Define outcomes for farmers, policy, and science separately</span></div>
+            <div class="method-step"><span class="method-step-num">5.</span><span>Identify the proof needed for adoption and trust</span></div>
+            <div class="method-step"><span class="method-step-num">6.</span><span>Name one trade-off or unintended consequence — who might lose out?</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-card-header">
+          <div class="method-icon">🗺️</div>
+          <div class="method-day">Day 1 — Foundational Skill</div>
+          <h3>Systems Mapping</h3>
+        </div>
+        <div class="method-card-body">
+          <p>Before you can change a system, you need to see it. Systems mapping makes the invisible visible: the feedback loops, the stakeholders, the economic pressures, the unintended consequences. Tools like concept mapping, fuzzy cognitive mapping, and participatory farm-walk mapping all serve this purpose.</p>
+          <div class="method-steps">
+            <div class="method-step"><span class="method-step-num">1.</span><span>Start broad — list all factors influencing the problem in your sector</span></div>
+            <div class="method-step"><span class="method-step-num">2.</span><span>Draw connections between elements — what influences what?</span></div>
+            <div class="method-step"><span class="method-step-num">3.</span><span>Identify feedback loops — what reinforces or stabilises the problem?</span></div>
+            <div class="method-step"><span class="method-step-num">4.</span><span>Ask: where would an intervention work, and where would it fail?</span></div>
+            <div class="method-step"><span class="method-step-num">5.</span><span>Do a gallery walk — others will see connections you missed</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-card-header">
+          <div class="method-icon">💬</div>
+          <div class="method-day">Day 3 — Applied Skill</div>
+          <h3>Research Communication</h3>
+        </div>
+        <div class="method-card-body">
+          <p>Getting published is the start, not the end. Each audience requires a different entry point. The goal is always the same: change how someone understands something. This requires empathy, preparation, and a single clear message.</p>
+          <div class="method-steps">
+            <div class="method-step"><span class="method-step-num">Press</span><span>One message. Brief your partners. Use video and direct quotes to get your words out.</span></div>
+            <div class="method-step"><span class="method-step-num">Funders</span><span>Align to their strategic priorities. Lead with impact. Have a proposal ready before the call.</span></div>
+            <div class="method-step"><span class="method-step-num">Journals</span><span>Choose for reach. Engage the press office. Offer video abstracts and follow-up content.</span></div>
+            <div class="method-step"><span class="method-step-num">Public</span><span>No jargon. Find common ground first. Make them active participants, not passive recipients.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FRAMEWORK EXPLORER ─────────────────────────────────────── -->
+<section class="framework-section" id="frameworks">
+  <div class="container">
+    <div class="section-label">Interactive Frameworks</div>
+    <h2 class="section-title">Explore the tools used at the College</h2>
+    <p class="section-intro">These are the actual frameworks given to participants. Use them to design your own research.</p>
+
+    <div class="framework-tabs">
+      <button class="ftab active" onclick="showFramework('par', this)">PAR Framework</button>
+      <button class="ftab" onclick="showFramework('td', this)">Transdisciplinary Design</button>
+    </div>
+
+    <!-- PAR FRAMEWORK -->
+    <div class="fpanel active" id="fp-par">
+      <p style="font-size:0.92rem;color:var(--mid);margin-bottom:1.5rem;">Use this to design research <em>with</em> farmers, not <em>on</em> them. Work through the four dimensions below for your specific AMR research scenario.</p>
+      <div class="framework-grid">
+        <div class="fcard">
+          <div class="fcard-q">1. WHO are the partners?</div>
+          <div class="fcard-hint">Who will be involved throughout the entire process (primary partners / co-researchers)? Who only at strategic points, and why? Why these farmers and not others? Who else should be consulted or informed — and how?</div>
+          <div class="fcard-prompt">Think about: power differences, who is often left out of research conversations, who holds knowledge you don't have access to from a desk.</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-q">2. WHAT will you work on together?</div>
+          <div class="fcard-hint">How will you identify what questions matter most to your partners? How will you co-develop them? What data collection methods make sense for which stakeholders? What formats will be useful to farmers beyond academic papers?</div>
+          <div class="fcard-prompt">Consider: benchmarking tools, farm maps, participatory field walks, peer group workshops — outputs that have value to the farmer, not just the researcher.</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-q">3. HOW will you ensure authentic collaboration?</div>
+          <div class="fcard-hint">How will you build relationships before asking people to participate? Where and when will farmers have real decision-making power? How will you acknowledge and compensate their time and expertise? How will you make participation feasible in terms of timing, location, language, and format?</div>
+          <div class="fcard-prompt">Remember: farmers work to farm timelines, not research timelines. Accessibility is not an afterthought — it determines who can actually be in the room.</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-q">4. What CHALLENGES do you anticipate?</div>
+          <div class="fcard-hint">What practical barriers exist (time, resources, policy, competing priorities)? What tensions might arise between academic and farm practice timelines, different agendas, power dynamics, or different value systems? How will you address these, and who or what could help?</div>
+          <div class="fcard-prompt">Be honest: participatory approaches are not always the right choice. If stakeholders want independent recommendations, PAR may not be what they need.</div>
+        </div>
+      </div>
+      <div class="framework-reflection">
+        <h4>Reflection Questions</h4>
+        <p>How is this different from how you might have designed this research before today?</p>
+        <p>What shifts in mindset does participatory research require from you, specifically?</p>
+      </div>
+    </div>
+
+    <!-- TD DESIGN -->
+    <div class="fpanel" id="fp-td">
+      <div class="td-intro">
+        <p style="font-size:0.92rem;color:var(--mid);margin-bottom:1rem;">A transdisciplinary question cannot be answered from just one perspective. Use this framework to develop a question that <em>requires</em> integration across disciplines.</p>
+      </div>
+      <div class="td-contrast">
+        <div class="td-col uni">
+          <h4>❌ Uni-disciplinary question</h4>
+          <div class="td-example neutral">"What is the prevalence of AMR in pigs?"</div>
+          <div class="td-example neutral">"What are farmers' attitudes to antibiotic use?"</div>
+          <div class="td-example neutral">"What AMR genes are present in soil near farms?"</div>
+        </div>
+        <div class="td-col trans">
+          <h4>✓ Transdisciplinary question</h4>
+          <div class="td-example good">"How do economic pressures, diagnostic limitations, and prescribing norms interact to drive antibiotic use, and what multi-level interventions could disrupt this cycle?"</div>
+          <div class="td-example good">"How can precision livestock technology be designed with farmers to simultaneously improve disease detection, maintain surveillance data flows, and reduce AMU?"</div>
+        </div>
+      </div>
+      <div class="td-builder">
+        <h3>Build your integrated problem statement</h3>
+        <p>A good integrated problem statement draws on ALL disciplinary perspectives in your group. Try using this structure:</p>
+        <div class="td-formula">
+          <span class="td-part bio">Biological factor</span>
+          <span class="td-part plus">is reinforced by</span>
+          <span class="td-part eco">Economic factor</span>
+          <span class="td-part plus">, shaped by</span>
+          <span class="td-part soc">Social factor</span>
+          <span class="td-part plus">, and complicated by</span>
+          <span class="td-part pol">Environmental / Policy factor</span>
+          <span class="td-part arrow">→ this is your problem</span>
+        </div>
+      </div>
+      <div class="framework-grid" style="margin-top:1.2rem;">
+        <div class="fcard">
+          <div class="fcard-q">Who else needs to be involved?</div>
+          <div class="fcard-hint">Which stakeholders (farmers, vets, industry)? Which disciplines are missing from your group? Who has the data or practical knowledge you need?</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-q">What would each discipline contribute?</div>
+          <div class="fcard-hint">From each discipline in your group: what would you measure, observe, or analyse? What methods do you each bring? How do they complement rather than duplicate?</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-q">What's the planned outcome?</div>
+          <div class="fcard-hint">For farmers and vets? For policy? For science? These may be different things. A good transdisciplinary proposal articulates value for all three.</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-q">What proof is needed for adoption?</div>
+          <div class="fcard-hint">How will you know if someone will actually use what you create? What would need to be true for a farmer, a vet, or a policy maker to change their practice?</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-q">One potential trade-off?</div>
+          <div class="fcard-hint">If this works, who might lose out? What could go wrong? Naming unintended consequences is a sign of systems thinking, not a weakness in your proposal.</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-q">How do you know it mattered?</div>
+          <div class="fcard-hint">What are the multiple currencies of value? Peer-reviewed papers matter for academia; behaviour change matters for farmers; policy uptake matters for government. Name all three.</div>
+        </div>
+      </div>
+      <div class="framework-reflection">
+        <h4>Reflection Questions</h4>
+        <p>How did your initial question change as you heard other disciplinary perspectives?</p>
+        <p>Could any single discipline in your group answer this question alone?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── LEARNING PRINCIPLES ────────────────────────────────────── -->
+<section class="principles-section">
+  <div class="container">
+    <div class="section-label">Pedagogical Design</div>
+    <h2 class="section-title">Why the College is designed the way it is</h2>
+    <p class="section-intro">The learning architecture follows Kolb's Experiential Learning Cycle and progressive complexity — each activity builds deliberately on the last.</p>
+    <div class="principles-grid">
+      <div class="p-card">
+        <div class="p-num">01</div>
+        <h3>Concrete Experience First</h3>
+        <p>The farm visit, systems mapping, and meeting diverse participants give people something tangible to think <em>from</em> before asking them to think <em>about</em> abstract frameworks.</p>
+      </div>
+      <div class="p-card">
+        <div class="p-num">02</div>
+        <h3>Progressive Complexity</h3>
+        <p>Day 1: Understand → Identify → Describe. Day 2: Analyse → Apply → Integrate. Day 3: Create → Evaluate → Reflect. You cannot skip ahead.</p>
+      </div>
+      <div class="p-card">
+        <div class="p-num">03</div>
+        <h3>Social Learning Through Repetition</h3>
+        <p>The 'Collaboration Superpower' repeats across Days 1 and 2 with different prompts — ensuring every participant meets every other, with progressively deeper questions.</p>
+      </div>
+      <div class="p-card">
+        <div class="p-num">04</div>
+        <h3>Multiple Learning Styles</h3>
+        <p>Visual (maps, posters), Auditory (keynotes, discussions), Kinesthetic (farm visit, gallery walks), and Reading/Writing (templates, proposal development) — all present.</p>
+      </div>
+      <div class="p-card">
+        <div class="p-num">05</div>
+        <h3>Discomfort is the Point</h3>
+        <p>Forming cross-disciplinary proposals with strangers, without the right stakeholders in the room, is hard. That discomfort mirrors the real experience of building transdisciplinary research.</p>
+      </div>
+      <div class="p-card">
+        <div class="p-num">06</div>
+        <h3>Tangible Outputs</h3>
+        <p>Participants leave with a draft proposal, not just a certificate. The AMAST flexible fund (£5k–£10k) means strong ideas from the College can become real projects.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GET INVOLVED ───────────────────────────────────────────── -->
+<section class="involved-section" id="involved">
+  <div class="container">
+    <div class="section-label">Networks & Opportunities</div>
+    <h2 class="section-title">Get involved</h2>
+    <p>Two UKRI-funded networks support early career researchers in AMR. Both offer flexible funding, mentorship, training, and events.</p>
+    <div class="network-cards">
+      <div class="net-card">
+        <h4>AMAST Network</h4>
+        <p>Antimicrobial Resistance in Agrifood Systems Transdisciplinary. Flexible funds up to £10k for pilot projects. Max four projects will be funded.</p>
+      </div>
+      <div class="net-card">
+        <h4>Futures AMR Network (FAN)</h4>
+        <p>Sister network focused on ECR career development. Mentorship scheme, training events, writing retreats, AMR Blueprint work. Queen's University Belfast–led.</p>
+      </div>
+      <div class="net-card">
+        <h4>Post-College Opportunities</h4>
+        <p>Mentorship from senior researchers; flexible pilot funding; future College cohorts; collaboration with other UKRI AMR networks.</p>
+      </div>
+    </div>
+    <div class="cta-row">
+      <a href="https://amast.org.uk" target="_blank" class="btn btn-primary">Visit AMAST ↗</a>
+      <a href="#frameworks" class="btn btn-secondary">Use the Frameworks</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <p>AMAST College · UKRI AMR Network · Newcastle University · March 2026</p>
+    <p style="margin-top:0.4rem;">Built as an open training resource. <a href="#">Feedback welcome</a>.</p>
+  </div>
+</footer>
+
+<script>
+  // ── Day tabs ────────────────────────────────────────────────
+  function showDay(n, btn) {
+    document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('day-' + n).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ── Activity accordions ─────────────────────────────────────
+  function toggleActivity(header) {
+    const activity = header.closest('.activity');
+    const isOpen = activity.classList.contains('open');
+    // Close all in this panel
+    header.closest('.activities').querySelectorAll('.activity').forEach(a => a.classList.remove('open'));
+    if (!isOpen) activity.classList.add('open');
+  }
+
+  // ── Framework tabs ──────────────────────────────────────────
+  function showFramework(id, btn) {
+    document.querySelectorAll('.fpanel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+    document.getElementById('fp-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ── SEARCH ──────────────────────────────────────────────────
+  const searchIndex = [
+    // ── About ──
+    { section: 'About', title: 'What is the AMAST College?', anchor: '#about', text: 'The AMAST College brings together early career researchers and professionals from veterinary science, environmental science, social science, microbiology, policy to learn how to work across disciplinary boundaries on antimicrobial resistance in agrifood systems. AMR cannot be solved from one discipline alone.' },
+    { section: 'About', title: 'Transdisciplinary Research', anchor: '#about', text: 'Going beyond putting disciplines side by side — genuinely integrating scientific, practitioner, and community knowledge to co-produce solutions. Multi, inter, and transdisciplinary approaches.' },
+    { section: 'About', title: 'Participatory Research', anchor: '#about', text: 'Designing research with farmers and stakeholders, not on them. Shared power over questions, methods, and outputs. Farmer-led, co-design, co-production.' },
+    { section: 'About', title: 'Systems Thinking', anchor: '#about', text: 'Seeing AMR as an interconnected problem shaped by feedback loops, trade-offs, and dynamics that no single intervention can fix alone. Super wicked problem.' },
+    { section: 'About', title: 'Early Career Researchers and Professionals', anchor: '#about', text: 'Built specifically for ECR and ECP — the generation of researchers who will carry AMR science forward — with mentorship, flexible funding, and network connections.' },
+
+    // ── Day 1 ──
+    { section: 'Day 1 — Foundations', title: 'Systems Thinking Keynote (Steve Rushton)', anchor: '#journey', text: 'Campylobacter case study, 30 years of systems modelling, Quantitative Microbial Risk Assessment, QMRA, multi-scale modelling, farm populations, food chain. AMR as a super wicked problem. Biological, spatial and temporal scales.' },
+    { section: 'Day 1 — Foundations', title: 'Collaboration Superpower — Rounds 1–3', anchor: '#journey', text: 'Cross-disciplinary networking activity in small groups of 7–8. Three rounds of 15 minutes. Questions: what question are you hoping to explore, recent aha moment, method from your field that could help solve AMR. Identifying potential collaborators.' },
+    { section: 'Day 1 — Foundations', title: 'Mini-Talk: Doing Transdisciplinary Research (Marie McIntyre)', anchor: '#journey', text: 'Definitions: multi-disciplinary, inter-disciplinary, transdisciplinary. AMAST framework. Transdisciplinary means integrating scientific, practitioner and community knowledge. Cyclical, not linear. Iterative stakeholder engagement.' },
+    { section: 'Day 1 — Foundations', title: 'Systems Mapping Workshop (Lisa Morgans)', anchor: '#journey', text: 'Hands-on group mapping activity. Large poster paper and coloured markers. Map factors influencing antimicrobial use: stakeholders, economic pressures, incentives, regulations, knowledge gaps, social norms, environmental conditions. Gallery walk, cross-pollination, post-its, feedback loops, connections.' },
+
+    // ── Day 2 ──
+    { section: 'Day 2 — Methods', title: 'AMAST Showcase (Matt Gilmour)', anchor: '#journey', text: 'Concrete examples of participatory outputs. Pig industry 60% AMU reduction. Game bird farmers. Ready-to-eat food business. Honest broker between farmers, vets, regulators, innovators. Zenodo, open access, wheel of allies.' },
+    { section: 'Day 2 — Methods', title: 'Collaboration Superpower — Rounds 4–6', anchor: '#journey', text: 'Deeper cross-disciplinary networking rounds. Questions: what surprises people about AMR in your discipline, what assumption in your field needs challenging, what challenge could another discipline solve. Complementary expertise.' },
+    { section: 'Day 2 — Methods', title: 'Researching With Farmers Keynote (Lisa Morgans)', anchor: '#journey', text: 'Case studies from dairy, sheep, game birds, international farming. What works and what does not. Benchmarking, peer-to-peer learning, gatekeepers, listening, timing, follow-up. Farmer-led composting. Danish stable school model. Welsh government task-and-finish group. Gloucestershire.' },
+    { section: 'Day 2 — Methods', title: 'Field Visit: Cockle Park Farm', anchor: '#journey', text: 'Fritha Langford, Dave George, James Standen, Newcastle University. Livestock AMR tour with young beef cattle. Research farm. Q&A with farm manager. Tension between research timelines and farming timelines. Wellies. Hands-on real world exposure.' },
+    { section: 'Day 2 — Methods', title: 'Participatory Research Workshop (Lisa Morgans)', anchor: '#journey', text: 'PAR Framework Template. Working with stakeholders not on them. Co-design, co-production. Who are the partners, what will you work on together, how to ensure authentic collaboration, what challenges do you anticipate. Power sharing, accessibility, trust building, recognising contributions. AMR research scenarios: animal, environment, plant.' },
+    { section: 'Day 2 — Methods', title: 'Transdisciplinary Research Questions Workshop (Matt Gilmour)', anchor: '#journey', text: 'Formulating research questions requiring multiple disciplines. AMR challenges across pig, ruminant, poultry, aquaculture, crops, game birds, cross-sector. Integrated problem statement. Biological, economic, social, environmental factors. Group formation for collaborative proposals. What Why Who When Where How.' },
+
+    // ── Day 3 ──
+    { section: 'Day 3 — Application', title: 'Collaborative Proposal Development Workshop', anchor: '#journey', text: 'Business canvas planning tool. Real system pain, scientific differentiator, proof of adoption, barriers, return on investment, ROI. Facilitators circulate. AMAST application form. Flexible funding £5k–£10k. Integrates all prior learning.' },
+    { section: 'Day 3 — Application', title: 'Group Presentations (Marie McIntyre, chair)', anchor: '#journey', text: 'Each group presents transdisciplinary research proposal concept. 15 minutes per group. Peer feedback and constructive discussion. Any format: PowerPoint, conversation, poem, performed scenario. Plus written form.' },
+    { section: 'Day 3 — Application', title: 'Futures Thinking / FAN (Janice Spencer)', anchor: '#journey', text: 'Futures AMR Network FAN, sister network to AMAST. Glasgow Caledonian University. Dan Spencer. Queen\'s University Belfast. Long-term thinking, anticipating system changes, uncertainty. ECR needs poll. AMR Blueprint. Mentorship scheme, training, succession, writing retreats. UKRI funded. Early career researcher brain drain.' },
+    { section: 'Day 3 — Application', title: 'Transdisciplinary Communication (Seema Biswas)', anchor: '#journey', text: 'Communication strategies for researchers. Audiences: press and media, funders, academic journals, general public. Red Cross surgeon. Changing perspectives. One message. Video abstracts. Press office. School children. Trustworthy individuals. Call to action. Social media. Industry press.' },
+    { section: 'Day 3 — Application', title: 'Pearls, Puzzles, Proposals — Reflection (Lisa Morgans)', anchor: '#journey', text: 'Structured reflective practice. ORID framework, What So What What Now. Pearls of wisdom gained. Puzzles: questions still held. Proposals: what to do differently. Metacognition, sustained engagement, next steps.' },
+
+    // ── Methods ──
+    { section: 'Core Methods', title: 'Participatory Action Research (PAR)', anchor: '#methods', text: 'Research with farmers not on them. Action-orientated, intent to change practices. Embedded researcher. Identify real partners, co-develop questions, share power, acknowledge contributions, anticipate tensions, follow up. Stakeholder engagement. Co-design co-production.' },
+    { section: 'Core Methods', title: 'Transdisciplinary Research Design', anchor: '#methods', text: 'Question requiring three or more disciplines. Cannot be answered from one perspective. Integrated problem statement: biological, economic, social, environmental factors. Map disciplinary contributions, outcomes for farmers policy and science, proof of adoption, trade-offs, unintended consequences.' },
+    { section: 'Core Methods', title: 'Systems Mapping', anchor: '#methods', text: 'Concept mapping, fuzzy cognitive mapping, participatory farm-walk mapping. List all factors, draw connections, identify feedback loops, find intervention points. Gallery walk. Making the invisible visible.' },
+    { section: 'Core Methods', title: 'Research Communication', anchor: '#methods', text: 'Communicating research to press, funders, journals, general public. One clear message. Brief research partners. Video quotes, direct quotes. Align to funder strategy. Lead with impact. Choose journal for reach. No jargon. Common ground. Active participation not passive reception.' },
+
+    // ── PAR Framework ──
+    { section: 'PAR Framework', title: 'Who are the partners?', anchor: '#frameworks', text: 'Primary partners, core co-researchers, secondary stakeholders. Who will be involved throughout the entire process? Who only at strategic points and why? Why these farmers and not others? Who holds knowledge you do not have access to?' },
+    { section: 'PAR Framework', title: 'What will you work on together?', anchor: '#frameworks', text: 'Co-developing research questions that matter to partners and communities. Data collection methods, tools. Non-academic outputs: benchmarking tools, farm maps, participatory field walks, peer group workshops. Tangible outputs with value to farmers.' },
+    { section: 'PAR Framework', title: 'How to ensure authentic collaboration?', anchor: '#frameworks', text: 'Building trust before asking people to participate. Sharing power: decision-making power for farmers and stakeholders. Recognising and compensating contributions of time and expertise. Accessibility: timing, location, language, format. Farm timelines vs research timelines.' },
+    { section: 'PAR Framework', title: 'Anticipating challenges in PAR', anchor: '#frameworks', text: 'Practical barriers: time, resources, policy constraints, competing priorities. Tensions: academic vs farm practice timelines, different agendas, power dynamics, different backgrounds and value systems. Mitigation strategies. When PAR may not be the right approach.' },
+
+    // ── TD Design Framework ──
+    { section: 'Transdisciplinary Design Framework', title: 'Integrated problem statement', anchor: '#frameworks', text: 'Biological factor reinforced by economic factor shaped by social factor complicated by environmental or policy factor. Drawing on all disciplinary perspectives in the group. Systems-level issue. Real system pain not just a research gap.' },
+    { section: 'Transdisciplinary Design Framework', title: 'Uni-disciplinary vs Transdisciplinary questions', anchor: '#frameworks', text: 'Uni-disciplinary: What is the prevalence of AMR in pigs? Transdisciplinary: How do economic pressures, diagnostic limitations, and prescribing norms interact to drive antibiotic use and what multi-level interventions could disrupt this cycle? Requires three or more disciplines.' },
+    { section: 'Transdisciplinary Design Framework', title: 'Outcomes, proof, and trade-offs', anchor: '#frameworks', text: 'Planned outcomes for farmers and vets, for policy, for science. Multiple currencies of value. Proof needed for adoption and trust. Validation pathways. One potential trade-off or unintended consequence. Who might lose out if this works?' },
+
+    // ── Pedagogy ──
+    { section: 'Pedagogical Design', title: "Kolb's Experiential Learning Cycle", anchor: '#about', text: "Concrete experience: farm visit, systems mapping, meeting diverse participants. Reflective observation: gallery walks, peer feedback, facilitated discussions. Abstract conceptualisation: keynotes on systems thinking, participatory methods, transdisciplinary questions. Active experimentation: proposal development." },
+    { section: 'Pedagogical Design', title: 'Progressive Complexity', anchor: '#about', text: 'Day 1: Understand, Identify, Describe. Day 2: Analyse, Apply, Integrate. Day 3: Create, Evaluate, Reflect. You cannot skip ahead. Each activity builds foundational skills for the next.' },
+    { section: 'Pedagogical Design', title: 'Multiple Learning Styles', anchor: '#about', text: 'Visual: systems maps, posters, presentations. Auditory: keynotes, discussions, peer sharing. Kinesthetic: farm visit, gallery walks, hands-on mapping. Reading and writing: templates, proposal development, reflection.' },
+
+    // ── Networks ──
+    { section: 'Get Involved', title: 'AMAST Network', anchor: '#involved', text: 'Antimicrobial Resistance in Agrifood Systems Transdisciplinary network. UKRI funded. Flexible funds up to £10k for pilot projects. Honest broker for farmers and vets. amast.org.uk' },
+    { section: 'Get Involved', title: 'Futures AMR Network (FAN)', anchor: '#involved', text: 'Sister network focused on early career researcher career development. Mentorship scheme, training events, writing retreats, AMR Blueprint. Queen\'s University Belfast led. Linda Yama. Glasgow Caledonian. Ulster University. Warwick. UKRI funded.' },
+    { section: 'Get Involved', title: 'Post-College Opportunities', anchor: '#involved', text: 'Mentorship from senior researchers. Flexible pilot funding £5k to £10k. Future College cohorts. Collaboration with other UKRI AMR networks. Zenodo open access DOI reports. Member events.' },
+  ];
+
+  function highlight(text, query) {
+    const words = query.trim().split(/\s+/).filter(Boolean);
+    let result = text;
+    words.forEach(word => {
+      const re = new RegExp('(' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      result = result.replace(re, '<mark>$1</mark>');
+    });
+    return result;
+  }
+
+  function getSnippet(text, query, maxLen = 120) {
+    const words = query.trim().split(/\s+/).filter(Boolean);
+    const lc = text.toLowerCase();
+    let best = 0;
+    words.forEach(w => {
+      const idx = lc.indexOf(w.toLowerCase());
+      if (idx !== -1) best = Math.max(0, idx - 40);
+    });
+    const snippet = text.slice(best, best + maxLen);
+    return (best > 0 ? '…' : '') + snippet + (best + maxLen < text.length ? '…' : '');
+  }
+
+  function doSearch(query) {
+    const q = query.trim().toLowerCase();
+    const resultsEl = document.getElementById('search-results');
+    const clearBtn  = document.getElementById('search-clear');
+
+    clearBtn.style.display = q.length ? 'block' : 'none';
+
+    if (q.length < 2) {
+      resultsEl.classList.remove('visible');
+      return;
+    }
+
+    const words = q.split(/\s+/).filter(Boolean);
+    const scored = searchIndex.map(item => {
+      const haystack = (item.title + ' ' + item.section + ' ' + item.text).toLowerCase();
+      let score = 0;
+      words.forEach(w => {
+        if (item.title.toLowerCase().includes(w)) score += 3;
+        if (item.section.toLowerCase().includes(w)) score += 1;
+        if (haystack.includes(w)) score += 1;
+      });
+      return { ...item, score };
+    }).filter(i => i.score > 0).sort((a, b) => b.score - a.score).slice(0, 8);
+
+    if (scored.length === 0) {
+      resultsEl.innerHTML = `<div class="search-no-results">No results for <strong>"${query}"</strong>. Try a different keyword.</div>`;
+    } else {
+      resultsEl.innerHTML =
+        `<div class="search-results-header">${scored.length} result${scored.length > 1 ? 's' : ''} for "${query}"</div>` +
+        scored.map(item => {
+          const snippet = highlight(getSnippet(item.text, q), q);
+          const title   = highlight(item.title, q);
+          return `<a class="search-result-item" href="${item.anchor}" onclick="handleResultClick(event, '${item.anchor}')">
+            <div class="result-section">${item.section}</div>
+            <div class="result-title">${title}</div>
+            <div class="result-snippet">${snippet}</div>
+          </a>`;
+        }).join('');
+    }
+    resultsEl.classList.add('visible');
+  }
+
+  function handleResultClick(e, anchor) {
+    e.preventDefault();
+    // If the anchor points to a day tab, activate it
+    if (anchor === '#journey') {
+      // Try to find which day panel is most relevant — default to opening Day 1 if none open
+      const activePanel = document.querySelector('.day-panel.active');
+      if (!activePanel) {
+        document.querySelector('.day-tab').click();
+      }
+    }
+    document.getElementById('search-results').classList.remove('visible');
+    document.getElementById('search-input').value = '';
+    document.getElementById('search-clear').style.display = 'none';
+    const target = document.querySelector(anchor);
+    if (target) {
+      const navH = document.querySelector('nav').offsetHeight;
+      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - navH - 16, behavior: 'smooth' });
+    }
+  }
+
+  const searchInput = document.getElementById('search-input');
+  const searchClear = document.getElementById('search-clear');
+  const searchResults = document.getElementById('search-results');
+
+  let debounceTimer;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => doSearch(searchInput.value), 160);
+  });
+
+  searchInput.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      searchResults.classList.remove('visible');
+      searchInput.blur();
+    }
+    if (e.key === 'Enter') {
+      const first = searchResults.querySelector('.search-result-item');
+      if (first) first.click();
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const items = searchResults.querySelectorAll('.search-result-item');
+      if (items.length) items[0].focus();
+    }
+  });
+
+  searchResults.addEventListener('keydown', e => {
+    const items = [...searchResults.querySelectorAll('.search-result-item')];
+    const idx = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown' && idx < items.length - 1) { e.preventDefault(); items[idx + 1].focus(); }
+    if (e.key === 'ArrowUp')  { e.preventDefault(); idx > 0 ? items[idx - 1].focus() : searchInput.focus(); }
+    if (e.key === 'Escape')   { searchResults.classList.remove('visible'); searchInput.focus(); }
+  });
+
+  searchClear.addEventListener('click', () => {
+    searchInput.value = '';
+    searchResults.classList.remove('visible');
+    searchClear.style.display = 'none';
+    searchInput.focus();
+  });
+
+  // Close on outside click
+  document.addEventListener('click', e => {
+    if (!document.querySelector('.nav-search').contains(e.target)) {
+      searchResults.classList.remove('visible');
+    }
+  });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.method-card, .proposal-card, .p-card, .fcard, .net-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
